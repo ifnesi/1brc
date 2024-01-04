@@ -14,14 +14,14 @@ def get_file_chunks(
     chunk_size = file_size // cpu_count
 
     start_end = list()
-    with open(file_name, "r") as f:
+    with open(file_name, "r+b") as f:
 
         def is_new_line(position):
             if position == 0:
                 return True
             else:
                 f.seek(position - 1)
-                return f.read(1) == "\n"
+                return f.read(1) == b"\n"
 
         def next_line(position):
             f.seek(position)
