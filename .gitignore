@@ -1,0 +1,8 @@
+# Visual Studio Code
+.vscode
+.factorypath
+
+# OSX
+.DS_Store
+
+measurements*.txt
