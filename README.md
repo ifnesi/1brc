@@ -1,6 +1,6 @@
 # 1BRC: One Billion Row Challenge in Python
 
-Python implementation of Gunnar's 1 billion rows challenge:
+Python implementation of Gunnar's 1 billion row challenge:
 - https://www.morling.dev/blog/one-billion-row-challenge
 - https://github.com/gunnarmorling/1brc
 
@@ -13,4 +13,4 @@ Python implementation of Gunnar's 1 billion rows challenge:
 | pypy3 | calculateAverage.py | 286.33s | 9.57s | 746% | 39.665 |
 | python3 | calculateAverage.py | 378.54s | 6.94s | 747% | 51.544 |
 
-The file `calculateAveragePypy.py` was created by [donalm](https://github.com/donalm), a +2x improved version of the initial version (`calculateAverage.py`) when running in pypy3, even capable of beating the implementation using (DuckDB)[https://duckdb.org/] `calculateAverageDuckDB.py`.
+The file `calculateAveragePypy.py` was created by [donalm](https://github.com/donalm), a +2x improved version of the initial script (`calculateAverage.py`) when running in pypy3, even capable of beating the implementation using (DuckDB)[https://duckdb.org/] `calculateAverageDuckDB.py`.
