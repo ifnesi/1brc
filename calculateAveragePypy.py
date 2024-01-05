@@ -1,4 +1,4 @@
-# time python3 calculateAverage.py
+# time pypy3 calculateAveragePypy.py
 import os
 import multiprocessing as mp
 
@@ -58,61 +58,61 @@ def _process_file_chunk(
     file_name: str,
     chunk_start: int,
     chunk_end: int,
+    blocksize: int = 1024 * 1024,
 ) -> dict:
     """Process each file chunk in a different process"""
     result = dict()
-    blocksize = 1024 * 1024
-    fh = open(file_name, "rb")
-    byte_count = chunk_end - chunk_start
-    fh.seek(chunk_start)
-    tail = b""
 
-    location = None
+    with open(file_name, "r+b") as fh:
+        fh.seek(chunk_start)
 
-    while byte_count:
-        if blocksize > byte_count:
-            blocksize = byte_count
-        byte_count = byte_count - blocksize
+        tail = b""
+        location = None
+        byte_count = chunk_end - chunk_start
 
-        data = tail + fh.read(blocksize)
+        while byte_count > 0:
+            if blocksize > byte_count:
+                blocksize = byte_count
+            byte_count -= blocksize
 
-        index = 0
-        while data:
-            if location is None:
+            index = 0
+            data = tail + fh.read(blocksize)
+            while data:
+                if location is None:
+                    try:
+                        semicolon = data.index(b";", index)
+                    except ValueError:
+                        tail = data[index:]
+                        break
+
+                    location = data[index:semicolon]
+                    index = semicolon + 1
+
                 try:
-                    semicolon = data.index(b";", index)
+                    newline = data.index(b"\n", index)
                 except ValueError:
                     tail = data[index:]
                     break
 
-                location = data[index:semicolon]
-                index = semicolon + 1
+                value = float(data[index:newline])
+                index = newline + 1
 
-            try:
-                newline = data.index(b"\n", index)
-            except ValueError:
-                tail = data[index:]
-                break
+                if location not in result:
+                    result[location] = [
+                        value,
+                        value,
+                        value,
+                        1,
+                    ]  # min, max, sum, count
+                else:
+                    if value < result[location][0]:
+                        result[location][0] = value
+                    if value > result[location][1]:
+                        result[location][1] = value
+                    result[location][2] += value
+                    result[location][3] += 1
 
-            value = float(data[index:newline])
-            index = newline + 1
-
-            if location not in result:
-                result[location] = [
-                    value,
-                    value,
-                    value,
-                    1,
-                ]  # min, max, sum, count
-            else:
-                if value < result[location][0]:
-                    result[location][0] = value
-                if value > result[location][1]:
-                    result[location][1] = value
-                result[location][2] += value
-                result[location][3] += 1
-
-            location = None
+                location = None
 
     return result
 
