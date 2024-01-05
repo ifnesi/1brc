@@ -5,7 +5,7 @@ Python implementation of Gunnar's 1 billion row challenge:
 - https://github.com/gunnarmorling/1brc
 
 ## Performance (on a MacBook Pro M1 32GB)
-| Interperter | Script | user | system | cpu | total |
+| Interpreter | Script | user | system | cpu | total |
 | ----------- | ------ | ---- | ------ | --- | ----- |
 | pypy3 | calculateAveragePypy.py | 139.15s | 3.02s | 699% | 20.323 |
 | python3 | calculateAverageDuckDB.py | 186.78s | 4.21s | 806% | 23.673 |
