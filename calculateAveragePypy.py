@@ -105,12 +105,13 @@ def _process_file_chunk(
                         1,
                     ]  # min, max, sum, count
                 else:
-                    if value < result[location][0]:
-                        result[location][0] = value
-                    if value > result[location][1]:
-                        result[location][1] = value
-                    result[location][2] += value
-                    result[location][3] += 1
+                    _result = result[location]
+                    if value < _result[0]:
+                        _result[0] = value
+                    if value > _result[1]:
+                        _result[1] = value
+                    _result[2] += value
+                    _result[3] += 1
 
                 location = None
 
@@ -136,22 +137,24 @@ def process_file(
             if location not in result:
                 result[location] = measurements
             else:
-                if measurements[0] < result[location][0]:
-                    result[location][0] = measurements[0]
-                if measurements[1] > result[location][1]:
-                    result[location][1] = measurements[1]
-                result[location][2] += measurements[2]
-                result[location][3] += measurements[3]
+                _result = result[location]
+                if measurements[0] < _result[0]:
+                    _result[0] = measurements[0]
+                if measurements[1] > _result[1]:
+                    _result[1] = measurements[1]
+                _result[2] += measurements[2]
+                _result[3] += measurements[3]
 
     # Print final results
-    results_calculated = dict()
+    print("{", end="")
     for location, measurements in sorted(result.items()):
-        results_calculated[
-            location.decode("utf-8")
-        ] = f"{measurements[0]:.1f}/{(measurements[2] / measurements[3]) if measurements[3] !=0 else 0:.1f}/{measurements[1]:.1f}"
-    return results_calculated
+        print(
+            f"{location.decode('utf-8')}={measurements[0]:.1f}/{(measurements[2] / measurements[3]) if measurements[3] !=0 else 0:.1f}/{measurements[1]:.1f}",
+            end=", ",
+        )
+    print("\b\b} ")
 
 
 if __name__ == "__main__":
     cpu_count, *start_end = get_file_chunks("measurements.txt")
-    print(process_file(cpu_count, start_end[0]))
+    process_file(cpu_count, start_end[0])
