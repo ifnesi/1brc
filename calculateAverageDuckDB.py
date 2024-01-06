@@ -22,8 +22,11 @@ with duckdb.connect() as conn:
         """
     )
 
-    # Export to dict (it could be done via data.to_df().to_json(orient='records') too)
-    results = dict()
+    # Print final results
+    print("{", end="")
     for row in sorted(data.fetchall()):
-        results[row[0]] = f"{row[1]}/{row[2]}/{row[3]}"
-    print(results)
+        print(
+            f"{row[0]}={row[1]}/{row[2]}/{row[3]}",
+            end=", ",
+        )
+    print("\b\b} ")
