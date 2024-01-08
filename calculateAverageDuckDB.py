@@ -29,4 +29,4 @@ with duckdb.connect() as conn:
             f"{row[0]}={row[1]}/{row[2]}/{row[3]}",
             end=", ",
         )
-    print("\b\b} ")
+    print("\b} ")
