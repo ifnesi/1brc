@@ -152,7 +152,7 @@ def process_file(
             f"{location.decode('utf-8')}={measurements[0]:.1f}/{(measurements[2] / measurements[3]) if measurements[3] !=0 else 0:.1f}/{measurements[1]:.1f}",
             end=", ",
         )
-    print("\b} ")
+    print("\b\b} ")
 
 
 if __name__ == "__main__":
