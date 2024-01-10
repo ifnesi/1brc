@@ -22,7 +22,7 @@ options:
   -o OUTPUT, --output OUTPUT
                         Measurement file name (Default is measurements.txt)
   -r RECORDS, --records RECORDS
-                        Number of records to create (Default is 1,000,000,000)
+                        Number of records to create (Default is 1000000000)
 ```
 
 Example:
