@@ -3,6 +3,7 @@ import time
 
 import numpy as np
 import polars as pl
+from tqdm import tqdm
 
 
 class CreateMeasurement:
@@ -456,13 +457,11 @@ class CreateMeasurement:
         batch_ends = np.linspace(0, records, batches + 1).astype(int)
 
         with open(file_name, "w") as f:
-            for i in range(batches):
+            for i in tqdm(range(batches)):
                 from_, to = batch_ends[i], batch_ends[i + 1]
                 data = self.generate_batch(std_dev, to - from_)
                 data.write_csv(f, separator=sep, float_precision=1, include_header=False)
-                print(
-                    f" - Wrote {to} measurements in {time.time() - start:.2f} seconds"
-                )
+
             print(
                 f"Created file '{file_name}' with {to:,} measurements in {time.time() - start:.2f} seconds"
             )
