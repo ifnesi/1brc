@@ -444,7 +444,7 @@ class CreateMeasurement:
             f"Creating measurement file '{file_name}' with {records:,} measurements..."
         )
         start = time.time()
-        progress_report_unit = records // 100
+        progress_report_unit = max(records // 100, 1)
         with open(file_name, "w") as f:
             for i in range(records):
                 station, measurement = self.generateSingleMeasurement(std_dev=std_dev)
