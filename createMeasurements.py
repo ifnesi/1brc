@@ -422,8 +422,7 @@ class CreateMeasurement:
         ("Zürich", 9.3),
     )
 
-    station_names = np.array([n for n, _ in STATIONS])
-    station_means = np.array([mean for _, mean in STATIONS])
+    stations = pl.DataFrame(STATIONS, ("names", "means"))
 
     def __init__(self):
         self.rng = np.random.default_rng()
@@ -433,10 +432,14 @@ class CreateMeasurement:
             std_dev: float = 10,
             records: int = 10_000_000
     ) -> pl.DataFrame:
-        ii = self.rng.integers(len(self.station_names), size=records)
-        names = self.station_names[ii]
-        temperatures = self.rng.normal(self.station_means[ii], std_dev)
-        return pl.DataFrame({"stations": names, "measurements": temperatures})
+        batch = self.stations.sample(
+            records,
+            with_replacement=True,
+            shuffle=True,
+            seed=self.rng.integers(np.iinfo(np.int64).max)
+        )
+        batch = batch.with_columns(temperature=self.rng.normal(batch["means"], std_dev))
+        return batch.drop("means")
 
     def generate_measurement_file(
             self,
