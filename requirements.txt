@@ -1,2 +1,2 @@
 numpy==1.24.2
-pandas==2.2.1
+polars==0.20.16
