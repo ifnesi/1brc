@@ -1,8 +1,8 @@
 import argparse
 import time
-from typing import Tuple
 
 import numpy as np
+import pandas as pd
 
 
 class CreateMeasurement:
@@ -432,11 +432,11 @@ class CreateMeasurement:
             self,
             std_dev: float = 10,
             records: int = 10_000_000
-    ) -> Tuple[np.ndarray, np.ndarray]:
+    ) -> pd.DataFrame:
         ii = self.rng.integers(len(self.station_names), size=records)
         names = self.station_names[ii]
         temperatures = self.rng.normal(self.station_means[ii], std_dev)
-        return names, temperatures
+        return pd.DataFrame({"stations": names, "measurements": temperatures})
 
     def generate_measurement_file(
             self,
@@ -455,9 +455,8 @@ class CreateMeasurement:
         with open(file_name, "w") as f:
             for i in range(batches):
                 from_, to = batch_ends[i], batch_ends[i + 1]
-                stations, measurements = self.generate_batch(std_dev, to - from_)
-                for i in range(len(stations)):
-                    f.write(f"{stations[i]}{sep}{measurements[i]:.1f}\n")
+                data = self.generate_batch(std_dev, to - from_)
+                data.to_csv(f, sep=sep, float_format=".1", header=False, index=False)
                 print(
                     f" - Wrote {to} measurements in {time.time() - start:.2f} seconds"
                 )
