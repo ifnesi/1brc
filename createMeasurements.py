@@ -460,7 +460,7 @@ class CreateMeasurement:
 
 if __name__ == "__main__":
 
-    def min_records(records: int) -> int:
+    def min_records(records: str) -> int:
         try:
             value = int(records)
         except Exception:
@@ -479,16 +479,16 @@ if __name__ == "__main__":
         "--output",
         dest="output",
         type=str,
-        help=f"Measurement file name (Default is measurements.txt)",
+        help='Measurement file name (default is "measurements.txt")',
         default="measurements.txt",
     )
     parser.add_argument(
         "-r",
         "--records",
-        help=f"Number of records to create (Default is 1000000000)",
+        help="Number of records to create (default is 1_000_000_000)",
         dest="records",
         type=min_records,
-        default=1000000000,
+        default=1_000_000_000,
     )
 
     args = parser.parse_args()
