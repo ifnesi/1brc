@@ -1,6 +1,6 @@
 import argparse
-import random
 import time
+from typing import Tuple
 
 import numpy as np
 
@@ -422,39 +422,47 @@ class CreateMeasurement:
         ("Zürich", 9.3),
     )
 
-    def generateSingleMeasurement(
-        self,
-        std_dev: float = 10,
-    ) -> tuple:
-        station, mean_temperature = random.choice(CreateMeasurement.STATIONS)
-        random_temperature = np.random.normal(mean_temperature, std_dev)
-        return (
-            station,
-            random_temperature,
-        )
+    station_names = np.array([n for n, _ in STATIONS])
+    station_means = np.array([mean for _, mean in STATIONS])
 
-    def generateMeasurementFile(
-        self,
-        file_name: str = "measurements.txt",
-        records: int = 1000000000,
-        sep: str = ";",
-        std_dev: float = 10,
+    def __init__(self):
+        self.rng = np.random.default_rng()
+
+    def generate_batch(
+            self,
+            std_dev: float = 10,
+            records: int = 10_000_000
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        ii = self.rng.integers(len(self.station_names), size=records)
+        names = self.station_names[ii]
+        temperatures = self.rng.normal(self.station_means[ii], std_dev)
+        return names, temperatures
+
+    def generate_measurement_file(
+            self,
+            file_name: str = "measurements.txt",
+            records: int = 1_000_000_000,
+            sep: str = ";",
+            std_dev: float = 10,
     ) -> None:
         print(
             f"Creating measurement file '{file_name}' with {records:,} measurements..."
         )
         start = time.time()
-        progress_report_unit = max(records // 100, 1)
+        batches = max(records // 10_000_000, 1)
+        batch_ends = np.linspace(0, records, batches + 1).astype(int)
+
         with open(file_name, "w") as f:
-            for i in range(records):
-                station, measurement = self.generateSingleMeasurement(std_dev=std_dev)
-                f.write(f"{station}{sep}{measurement:.1f}\n")
-                if i > 0 and i % progress_report_unit == 0:
-                    print(
-                        f" - Wrote {i:,} measurements in {time.time() - start:.2f} seconds"
-                    )
+            for i in range(batches):
+                from_, to = batch_ends[i], batch_ends[i + 1]
+                stations, measurements = self.generate_batch(std_dev, to - from_)
+                for i in range(len(stations)):
+                    f.write(f"{stations[i]}{sep}{measurements[i]:.1f}\n")
+                print(
+                    f" - Wrote {to} measurements in {time.time() - start:.2f} seconds"
+                )
             print(
-                f"Created file '{file_name}' with {i+1:,} measurements in {time.time() - start:.2f} seconds"
+                f"Created file '{file_name}' with {to:,} measurements in {time.time() - start:.2f} seconds"
             )
 
 
@@ -472,6 +480,7 @@ if __name__ == "__main__":
                 )
             else:
                 return value
+
 
     parser = argparse.ArgumentParser(description="Create measurement file")
     parser.add_argument(
@@ -494,7 +503,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     measurement = CreateMeasurement()
-    measurement.generateMeasurementFile(
+    measurement.generate_measurement_file(
         file_name=args.output,
         records=args.records,
     )
