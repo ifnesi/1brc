@@ -7,7 +7,7 @@ Python implementation of Gunnar's 1 billion row challenge:
 ## Creating the measurements file with 1B rows
 
 First install the Python requirements:
-```
+```shell
 python3 -m pip install -r requirements.txt
 ```
 
@@ -17,33 +17,23 @@ usage: createMeasurements.py [-h] [-o OUTPUT] [-r RECORDS]
 
 Create measurement file
 
-options:
+optional arguments:
   -h, --help            show this help message and exit
   -o OUTPUT, --output OUTPUT
-                        Measurement file name (Default is measurements.txt)
+                        Measurement file name (default is "measurements.txt")
   -r RECORDS, --records RECORDS
-                        Number of records to create (Default is 1000000000)
+                        Number of records to create (default is 1_000_000_000)
 ```
 
 Example:
 ```
 % python3 createMeasurements.py
 Creating measurement file 'measurements.txt' with 1,000,000,000 measurements...
- - Wrote 10,000,000 measurements in 8.92 seconds
- - Wrote 20,000,000 measurements in 17.82 seconds
- - Wrote 30,000,000 measurements in 26.73 seconds
- - Wrote 40,000,000 measurements in 35.54 seconds
- - Wrote 50,000,000 measurements in 44.36 seconds
- - Wrote 60,000,000 measurements in 53.07 seconds
- .
- .
- .
- - Wrote 980,000,000 measurements in 880.98 seconds
- - Wrote 990,000,000 measurements in 889.99 seconds
-Created file 'measurements.txt' with 1,000,000,000 measurements in 898.92 seconds
+100%|█████████████████████████████████████████| 100/100 [01:15<00:00,  1.32it/s]
+Created file 'measurements.txt' with 1,000,000,000 measurements in 75.86 seconds
 ```
 
-Be patient as it can take more than 15 minutes to have the file generated.
+Be patient as it can take more than a minute to have the file generated.
 
 Maybe as another challenge is to speed up the generation of the measurements file :slightly_smiling_face:
 
