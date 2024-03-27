@@ -114,6 +114,12 @@ def process_file(
                 _result[2] += measurements[2]
                 _result[3] += measurements[3]
 
+    total = sum(r[3] for r in result.values())
+    import sys
+    if len(sys.argv) > 1:
+        print(total)
+        return
+
     # Print final results
     print("{", end="")
     for location, measurements in sorted(result.items()):
