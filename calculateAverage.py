@@ -61,13 +61,13 @@ def _process_file_chunk(
 ) -> dict:
     """Process each file chunk in a different process"""
     result = dict()
-    with open(file_name, "r") as f:
+    with open(file_name, "rb") as f:
         f.seek(chunk_start)
         for line in f:
             chunk_start += len(line)
             if chunk_start > chunk_end:
                 break
-            location, measurement = line.split(";")
+            location, measurement = line.split(b";")
             measurement = float(measurement)
             if location not in result:
                 result[location] = [
@@ -124,7 +124,7 @@ def process_file(
     print("{", end="")
     for location, measurements in sorted(result.items()):
         print(
-            f"{location}={measurements[0]:.1f}/{(measurements[2] / measurements[3]) if measurements[3] !=0 else 0:.1f}/{measurements[1]:.1f}",
+            f"{location.decode('utf8')}={measurements[0]:.1f}/{(measurements[2] / measurements[3]) if measurements[3] !=0 else 0:.1f}/{measurements[1]:.1f}",
             end=", ",
         )
     print("\b\b} ")
