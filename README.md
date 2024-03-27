@@ -75,3 +75,7 @@ _result[3] += 1
 ```
 
 Python can be surprising sometimes.
+
+## Compare results
+
+Run `compare.sh` if you want to check that all the scripts produce the same output.
