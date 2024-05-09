@@ -69,21 +69,21 @@ def _process_file_chunk(
                 break
             location, measurement = line.split(b";")
             measurement = float(measurement)
-            if location not in result:
-                result[location] = [
-                    measurement,
-                    measurement,
-                    measurement,
-                    1,
-                ]  # min, max, sum, count
-            else:
-                _result = result[location]
+            _result = result.get(location)
+            if _result:
                 if measurement < _result[0]:
                     _result[0] = measurement
                 if measurement > _result[1]:
                     _result[1] = measurement
                 _result[2] += measurement
                 _result[3] += 1
+            else:
+                result[location] = [
+                    measurement,
+                    measurement,
+                    measurement,
+                    1,
+                ]  # min, max, sum, count
     return result
 
 
@@ -103,17 +103,16 @@ def process_file(
     result = dict()
     for chunk_result in chunk_results:
         for location, measurements in chunk_result.items():
-            if location not in result:
-                result[location] = measurements
-            else:
-                _result = result[location]
+            _result = result.get(location)
+            if _result:
                 if measurements[0] < _result[0]:
                     _result[0] = measurements[0]
                 if measurements[1] > _result[1]:
                     _result[1] = measurements[1]
                 _result[2] += measurements[2]
                 _result[3] += measurements[3]
-
+            else:
+                result[location] = measurements
     # Print final results
     print("{", end="")
     for location, measurements in sorted(result.items()):
