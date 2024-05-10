@@ -6,52 +6,18 @@ import multiprocessing as mp
 def get_file_chunks(
     file_name: str,
     max_cpu: int = 8,
-) -> list:
-    """Split flie into chunks"""
+) -> tuple[int, list]:
+    """Split file into chunks"""
     cpu_count = min(max_cpu, mp.cpu_count())
-
     file_size = os.path.getsize(file_name)
     chunk_size = file_size // cpu_count
-
-    start_end = list()
-    with open(file_name, "r+b") as f:
-
-        def is_new_line(position):
-            if position == 0:
-                return True
-            else:
-                f.seek(position - 1)
-                return f.read(1) == b"\n"
-
-        def next_line(position):
-            f.seek(position)
-            f.readline()
-            return f.tell()
-
-        chunk_start = 0
-        while chunk_start < file_size:
-            chunk_end = min(file_size, chunk_start + chunk_size)
-
-            while not is_new_line(chunk_end):
-                chunk_end -= 1
-
-            if chunk_start == chunk_end:
-                chunk_end = next_line(chunk_end)
-
-            start_end.append(
-                (
-                    file_name,
-                    chunk_start,
-                    chunk_end,
-                )
-            )
-
-            chunk_start = chunk_end
-
-    return (
-        cpu_count,
-        start_end,
-    )
+    chunks = [
+        (file_name, offset, offset + chunk_size)
+        for offset in range(0, file_size, chunk_size)
+    ]
+    # ensure last chunk covers any remaining bits
+    chunks[-1] = (file_name, chunks[-1][1], file_size)
+    return cpu_count, chunks
 
 
 def _process_file_chunk(
@@ -63,10 +29,10 @@ def _process_file_chunk(
     result = dict()
     with open(file_name, "rb") as f:
         f.seek(chunk_start)
+        if chunk_start != 0 and f.peek(1) != b"\n":
+            _ = next(f)  # skip incomplete line
+
         for line in f:
-            chunk_start += len(line)
-            if chunk_start > chunk_end:
-                break
             location, measurement = line.split(b";")
             measurement = float(measurement)
             if location not in result:
@@ -84,6 +50,8 @@ def _process_file_chunk(
                     _result[1] = measurement
                 _result[2] += measurement
                 _result[3] += 1
+            if (chunk_start := chunk_start + len(line)) > chunk_end:
+                break
     return result
 
 
@@ -125,5 +93,5 @@ def process_file(
 
 
 if __name__ == "__main__":
-    cpu_count, *start_end = get_file_chunks("measurements.txt")
-    process_file(cpu_count, start_end[0])
+    cpu_count, start_end = get_file_chunks("measurements.txt")
+    process_file(cpu_count, start_end)
