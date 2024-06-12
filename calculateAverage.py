@@ -6,7 +6,7 @@ import multiprocessing as mp
 def get_file_chunks(
     file_name: str,
     max_cpu: int = 8,
-) -> list:
+) -> tuple[int, list[tuple[str, int, int]]]:
     """Split flie into chunks"""
     cpu_count = min(max_cpu, mp.cpu_count())
 
@@ -118,7 +118,7 @@ def process_file(
     print("{", end="")
     for location, measurements in sorted(result.items()):
         print(
-            f"{location.decode('utf8')}={measurements[0]:.1f}/{(measurements[2] / measurements[3]) if measurements[3] !=0 else 0:.1f}/{measurements[1]:.1f}",
+            f"{location.decode('utf8')}={measurements[0]:.1f}/{(measurements[2] / measurements[3]) if measurements[3] != 0 else 0:.1f}/{measurements[1]:.1f}",
             end=", ",
         )
     print("\b\b} ")

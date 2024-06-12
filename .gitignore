@@ -5,6 +5,9 @@
 .vscode
 .factorypath
 
+# PyCharm
+.idea
+
 # OSX
 .DS_Store
 
