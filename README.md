@@ -54,7 +54,7 @@ The script `calculateAveragePypy.py` was created by [donalm](https://github.com/
 [Olivier Scalbert](https://github.com/oscalbert) has made a simple but incredible suggestion where performance increased by an average of 15% (table above has been updated), thank you :slightly_smiling_face:
 
 His suggestions were to change from:
-```
+```python
 if measurement < result[location][0]:
     result[location][0] = measurement
 if measurement > result[location][1]:
@@ -64,7 +64,7 @@ result[location][3] += 1
 ```
 
 to:
-```
+```python
 _result = result[location]
 if measurement < _result[0]:
     _result[0] = measurement
