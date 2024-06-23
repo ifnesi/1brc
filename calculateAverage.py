@@ -1,5 +1,6 @@
 # time python3 calculateAverage.py
 import os
+from gc import disable as gc_disable, enable as gc_enable
 import multiprocessing as mp
 
 
@@ -63,20 +64,14 @@ def _process_file_chunk(
     result = dict()
     with open(file_name, "rb") as f:
         f.seek(chunk_start)
+        gc_disable()
         for line in f:
             chunk_start += len(line)
             if chunk_start > chunk_end:
                 break
             location, measurement = line.split(b";")
             measurement = float(measurement)
-            if location not in result:
-                result[location] = [
-                    measurement,
-                    measurement,
-                    measurement,
-                    1,
-                ]  # min, max, sum, count
-            else:
+            try:
                 _result = result[location]
                 if measurement < _result[0]:
                     _result[0] = measurement
@@ -84,6 +79,15 @@ def _process_file_chunk(
                     _result[1] = measurement
                 _result[2] += measurement
                 _result[3] += 1
+            except KeyError:
+                result[location] = [
+                    measurement,
+                    measurement,
+                    measurement,
+                    1,
+                ]  # min, max, sum, count
+        
+        gc_enable()
     return result
 
 
