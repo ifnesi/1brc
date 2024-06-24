@@ -1,6 +1,7 @@
 # time pypy3 calculateAveragePypy.py
 import os
 import multiprocessing as mp
+from gc import disable as gc_disable, enable as gc_enable
 
 
 def get_file_chunks(
@@ -65,6 +66,7 @@ def _process_file_chunk(
 
     with open(file_name, "r+b") as fh:
         fh.seek(chunk_start)
+        gc_disable()
 
         tail = b""
         location = None
@@ -96,15 +98,7 @@ def _process_file_chunk(
 
                 value = float(data[index:newline])
                 index = newline + 1
-
-                if location not in result:
-                    result[location] = [
-                        value,
-                        value,
-                        value,
-                        1,
-                    ]  # min, max, sum, count
-                else:
+                try:
                     _result = result[location]
                     if value < _result[0]:
                         _result[0] = value
@@ -112,9 +106,17 @@ def _process_file_chunk(
                         _result[1] = value
                     _result[2] += value
                     _result[3] += 1
+                except KeyError:
+                    result[location] = [
+                        value,
+                        value,
+                        value,
+                        1,
+                    ]  # min, max, sum, count
 
                 location = None
-
+        
+        gc_enable()
     return result
 
 
