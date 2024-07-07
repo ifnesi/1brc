@@ -489,8 +489,8 @@ if __name__ == "__main__":
         "--output",
         dest="output",
         type=str,
-        help='Measurement file name (default is "measurements.txt")',
-        default="measurements.txt",
+        help='Measurement file name (default is "measurements.csv")',
+        default="measurements.csv",
     )
     parser.add_argument(
         "-r",
