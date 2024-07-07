@@ -12,7 +12,7 @@
 .DS_Store
 
 # Measurements
-measurements*.txt
+measurements*.csv
 
 # DuckDB files
 *.ddb
