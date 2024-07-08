@@ -115,7 +115,6 @@ def _process_file_chunk(
                     ]  # min, max, sum, count
 
                 location = None
-
         gc_enable()
     return result
 
