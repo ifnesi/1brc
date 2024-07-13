@@ -508,7 +508,7 @@ if __name__ == "__main__":
         dest="encoding",
         type=str,
         help="File encoding (default is 'utf-8')",
-        default="utf-8",
+        default=None,
     )
     
     args = parser.parse_args()

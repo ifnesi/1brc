@@ -24,7 +24,7 @@ optional arguments:
   -r RECORDS, --records RECORDS
                         Number of records to create (default is 1_000_000_000)
   -e ENCODING, --encoding Encoding
-                          The encoding to use for the created file (default is utf-8)
+                          The encoding to use for the created file (default is the python default for file creation)
 ```
 
 Example:
