@@ -448,6 +448,7 @@ class CreateMeasurement:
             records: int = 1_000_000_000,
             sep: str = ";",
             std_dev: float = 10,
+            encoding: str = "utf-8"
     ) -> None:
         print(
             f"Creating measurement file '{file_name}' with {records:,} measurements..."
@@ -456,7 +457,7 @@ class CreateMeasurement:
         batches = max(records // 10_000_000, 1)
         batch_ends = np.linspace(0, records, batches + 1).astype(int)
 
-        with open(file_name, "w", encoding="utf-8") as f:
+        with open(file_name, "w", encoding=encoding) as f:
             for i in tqdm(range(batches)):
                 from_, to = batch_ends[i], batch_ends[i + 1]
                 data = self.generate_batch(std_dev, to - from_)
@@ -501,10 +502,20 @@ if __name__ == "__main__":
         default=1_000_000_000,
     )
 
+    parser.add_argument(
+        "-e",
+        "--encoding",
+        dest="encoding",
+        type=str,
+        help="File encoding (default is 'utf-8')",
+        default="utf-8",
+    )
+    
     args = parser.parse_args()
 
     measurement = CreateMeasurement()
     measurement.generate_measurement_file(
         file_name=args.output,
         records=args.records,
+        encoding=args.encoding
     )

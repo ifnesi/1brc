@@ -1,4 +1,5 @@
 # time pypy3 calculateAveragePypy.py
+import argparse
 import os
 import multiprocessing as mp
 from gc import disable as gc_disable, enable as gc_enable
@@ -158,5 +159,16 @@ def process_file(
 
 
 if __name__ == "__main__":
-    cpu_count, *start_end = get_file_chunks("measurements.txt")
+    parser = argparse.ArgumentParser(description="Calculate average of measurements.")
+    parser.add_argument(
+        "-i",
+        "--input",
+        dest="input",
+        type=str,
+        help='Measurement file name (default is "measurements.txt")',
+        default="measurements.txt",
+    )
+    
+    args = parser.parse_args()
+    cpu_count, *start_end = get_file_chunks(args.input)
     process_file(cpu_count, start_end[0])
