@@ -456,7 +456,7 @@ class CreateMeasurement:
         batches = max(records // 10_000_000, 1)
         batch_ends = np.linspace(0, records, batches + 1).astype(int)
 
-        with open(file_name, "w") as f:
+        with open(file_name, encoding="utf-8", mode="w") as f:
             for i in tqdm(range(batches)):
                 from_, to = batch_ends[i], batch_ends[i + 1]
                 data = self.generate_batch(std_dev, to - from_)

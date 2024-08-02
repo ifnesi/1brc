@@ -15,7 +15,7 @@ def get_file_chunks(
     chunk_size = file_size // cpu_count
 
     start_end = list()
-    with open(file_name, "r+b") as f:
+    with open(file_name, encoding="utf-8", mode="r+b") as f:
 
         def is_new_line(position):
             if position == 0:
@@ -64,7 +64,7 @@ def _process_file_chunk(
     """Process each file chunk in a different process"""
     result = dict()
 
-    with open(file_name, "r+b") as fh:
+    with open(file_name, encoding="utf-8", mode="r+b") as fh:
         fh.seek(chunk_start)
         gc_disable()
 
@@ -115,7 +115,6 @@ def _process_file_chunk(
                     ]  # min, max, sum, count
 
                 location = None
-        
         gc_enable()
     return result
 
